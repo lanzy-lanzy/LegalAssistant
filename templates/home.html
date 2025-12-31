@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="animate-fade-in space-y-10">
+    <!-- Header Section -->
+    <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div>
+            <h1 class="text-4xl font-bold tracking-tight mb-2">Welcome Back, Counselor</h1>
+            <p class="text-slate-400">You have <span class="text-indigo-400 font-semibold">4 documents</span> pending review today.</p>
+        </div>
+        <div class="flex flex-wrap gap-4">
+            <button class="px-6 py-2.5 rounded-xl border border-white/10 hover:bg-white/5 transition-all flex items-center gap-2 font-medium text-slate-300">
+                <i class="fa-solid fa-cloud-arrow-down opacity-60"></i> Export Report
+            </button>
+            <button class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 transition-all shadow-lg shadow-indigo-500/20 flex items-center gap-2 font-semibold text-white" onclick="document.getElementById('file-upload').click()">
+                <i class="fa-solid fa-plus"></i> New Analysis
+            </button>
+            <input type="file" id="file-upload" class="hidden">
+        </div>
+    </header>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="glass p-6 group hover:translate-y-[-4px] transition-all duration-300">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center group-hover:bg-blue-500/20 transition-colors">
+                    <i class="fa-solid fa-file-contract text-blue-400 text-xl"></i>
+                </div>
+                <h3 class="text-slate-300 font-medium">Total Analyzed</h3>
+            </div>
+            <div class="flex items-baseline gap-2">
+                <p class="text-4xl font-bold tracking-tight text-white">128</p>
+                <span class="text-emerald-400 text-sm font-medium flex items-center gap-1">
+                    <i class="fa-solid fa-arrow-trend-up"></i> 12%
+                </span>
+            </div>
+            <p class="text-xs text-slate-500 mt-2">v.s. last month</p>
+        </div>
+
+        <div class="glass p-6 group hover:translate-y-[-4px] transition-all duration-300">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-12 h-12 bg-amber-500/10 rounded-xl flex items-center justify-center group-hover:bg-amber-500/20 transition-colors">
+                    <i class="fa-solid fa-triangle-exclamation text-amber-400 text-xl"></i>
+                </div>
+                <h3 class="text-slate-300 font-medium">High Risks Found</h3>
+            </div>
+            <div class="flex items-baseline gap-2">
+                <p class="text-4xl font-bold tracking-tight text-white">42</p>
+                <span class="text-rose-400 text-sm font-medium flex items-center gap-1">
+                    <i class="fa-solid fa-circle"></i> 5 Unresolved
+                </span>
+            </div>
+            <p class="text-xs text-slate-500 mt-2">Requiring immediate attention</p>
+        </div>
+
+        <div class="glass p-6 group hover:translate-y-[-4px] transition-all duration-300">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center group-hover:bg-purple-500/20 transition-colors">
+                    <i class="fa-solid fa-wand-magic-sparkles text-purple-400 text-xl"></i>
+                </div>
+                <h3 class="text-slate-300 font-medium">Clauses Generated</h3>
+            </div>
+            <div class="flex items-baseline gap-2">
+                <p class="text-4xl font-bold tracking-tight text-white">350+</p>
+            </div>
+            <p class="text-xs text-indigo-400 mt-2 font-medium">Saved approx. 24 hours</p>
+        </div>
+    </div>
+
+    <!-- Main Dynamic Area -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Upload Zone -->
+        <form action="/" method="POST" enctype="multipart/form-data" class="lg:col-span-2" id="upload-form" x-data="{ uploading: false }">
+            {% csrf_token %}
+            <label for="document-input" 
+                   class="glass p-10 flex flex-col items-center justify-center min-h-[400px] border-dashed border-2 border-white/10 hover:border-indigo-500/50 hover:bg-slate-800/20 transition-all cursor-pointer group w-full"
+                   :class="uploading ? 'opacity-50 cursor-wait' : ''">
+                <div class="text-center" x-show="!uploading">
+                    <div class="w-20 h-20 bg-indigo-500/10 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform shadow-2xl shadow-indigo-500/20">
+                        <i class="fa-solid fa-cloud-arrow-up text-4xl text-indigo-400"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold mb-3 tracking-tight">Post your legal documents</h2>
+                    <p class="text-slate-400 mb-8 max-w-sm mx-auto">Upload PDF, DOCX, or Text files and our AI will extract key metrics instantly.</p>
+                    <div class="px-8 py-3 rounded-xl bg-white text-slate-900 font-bold hover:bg-indigo-50 transition-all">
+                        Choose Documents
+                    </div>
+                </div>
+                <div class="text-center" x-show="uploading" x-cloak>
+                    <div class="relative w-20 h-20 mb-8 mx-auto">
+                        <div class="absolute inset-0 border-4 border-indigo-500/20 rounded-full"></div>
+                        <div class="absolute inset-0 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                    <h2 class="text-2xl font-bold mb-3 tracking-tight animate-pulse text-indigo-400">Processing Document...</h2>
+                    <p class="text-slate-400">Hold tight, our AI is scanning for compliance.</p>
+                </div>
+                <input type="file" name="document" id="document-input" class="hidden" @change="uploading = true; $el.form.submit()">
+            </label>
+        </form>
+
+
+        <!-- Recent Activity -->
+        <section class="glass p-8 flex flex-col">
+            <h2 class="text-xl font-bold mb-8 flex items-center gap-2">
+                <i class="fa-solid fa-clock-rotate-left opacity-30"></i> Recent Activity
+            </h2>
+            <div class="space-y-8 flex-1">
+                {% for doc in recent_documents %}
+                <a href="{% url 'analyze_doc' doc.id %}" class="flex gap-4 group">
+                    <div class="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center shrink-0 group-hover:bg-indigo-500/20 transition-colors">
+                        <i class="fa-solid fa-file-pdf text-indigo-400 text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-slate-200 line-clamp-1">{{ doc.title }}</p>
+                        <p class="text-sm text-slate-500">{{ doc.uploaded_at|timesince }} ago • <span class="{% if doc.risk_level == 'High' %}text-rose-500{% elif doc.risk_level == 'Medium' %}text-amber-500{% else %}text-emerald-500{% endif %} font-medium">{{ doc.risk_level }} Risk</span></p>
+                    </div>
+                </a>
+                {% empty %}
+                <p class="text-slate-500 text-center py-10">No recent activity</p>
+                {% endfor %}
+            </div>
+            <button class="w-full mt-10 py-3 rounded-xl border border-white/5 hover:bg-white/5 transition-all text-slate-400 font-medium text-sm">
+                Access Audit Logs
+            </button>
+        </section>
+    </div>
+
+</div>
+{% endblock content %}
+
