@@ -128,7 +128,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 TEMPLATES[0]['DIRS'].append(os.path.join(BASE_DIR, 'templates'))
 
-# Gemini AI Configuration
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
+# Gemini AI")
 GEMINI_MODEL_NAME = "gemini-3-flash-preview"
 
